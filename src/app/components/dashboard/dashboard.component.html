@@ -1,0 +1,171 @@
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg shadow-lg"
+  style="border-radius: 0 0 30px 30px; background-color: rgb(171, 179, 178);">
+  <div class="container-fluid">
+    <img class="float-start cursor-pointer img-fluid" width="30px" height="30px" src="./assets/logo company.png" />
+    <a class="navbar-brand ms-3">ToDo Application</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+      aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-end" id="navbarSupportedContent">
+      <ul class="navbar-nav float-end">
+        <li class="nav-item">
+          <a class="nav-link" (click)="logout()">
+            <i class="fas fa-sign-out-alt cursor-pointer" title="Sign Out" style="font-size: 24px;"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+
+<!-- Create Task Button  -->
+<div class="container mt-5 mb-0">
+  <div class="row">
+    <div class="col-6">
+      <div class="card" style="max-width: 25%; background-color:  #ADD8E6;">
+        <div class="card-body">
+          Task Available: {{ tasks.length }}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <button class="btn btn-sm fw-bold btn-secondary float-end mt-3 custom-button user-select-none"
+        data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+        Create Task <span class="text-sm">+</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Table task  -->
+<div class="container">
+  <table class="table table-striped table-bordered table-hover text-center" style="margin-top: 2%;">
+    <thead>
+      <tr>
+        <th class="bg-secondary" scope="col">SlNo.</th>
+        <th class="bg-secondary" scope="col">Task Name</th>
+        <th class="bg-secondary" scope="col">Description</th>
+        <th class="bg-secondary" scope="col">Status</th>
+        <th class="bg-secondary" scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let task of tasks; let i = index">
+        <th scope="row">{{ i + 1 }}</th>
+        <td>{{ task.name }}</td>
+        <td>{{ task.description }}</td>
+        <td>{{ task.status }}</td>
+        <td>
+          <span class="material-symbols-outlined cursor-pointer text-success" title="Edit Task" data-bs-toggle="modal"
+            data-bs-target="#editTaskModal" (click)="onEditTask(i)">
+            edit
+          </span> &nbsp;&nbsp;
+          <span class="material-symbols-outlined cursor-pointer text-danger" title="Delete Task"
+            (click)="onDeleteTask(i)">
+            delete
+          </span>
+        </td>
+
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+
+<!-- Create Task Modal -->
+<div class="modal fade user-select-none" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-light p-3 m-0">
+        <h1 class="modal-title text-color fw-bold p-0 m-0" id="staticBackdropLabel">Add Task</h1>
+        <button type="button" class="btn-close me-2" data-bs-dismiss="modal" aria-label="Close"
+          (click)="resetForm()"></button>
+      </div>
+
+      <div class="modal-body">
+        <form [formGroup]="TodoForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <div class="col-12 mb-2">
+              <label class="form-label mb-0" for="name">Task Name <span
+                  class="text-danger fw-bold fs-5">*</span></label>
+              <input class="form-control mt-0" type="text" id="name" name="name" formControlName="name" required
+                autocomplete="off">
+              <div *ngIf="TodoForm.get('name')?.invalid && TodoForm.get('name')?.touched"
+                class="text-danger fw-bold mt-1">
+                Task Name is required
+              </div>
+            </div>
+            <div class="col-12">
+              <label class="form-label mb-0" for="description">Description</label>
+              <textarea class="form-control mt-0" id="description" rows="3" name="description"
+                formControlName="description" autocomplete="off"></textarea>
+            </div>
+            <div class="col-12 mb-2">
+              <label class="form-label mb-0" for="status">Status</label>
+              <input class="form-control mt-0" type="text" id="status" name="status" formControlName="status"
+                autocomplete="off">
+            </div>
+          </div>
+          <div class="d-flex justify-content-end mt-4">
+            <button class="btn btn-sm btn-primary custom-button" type="submit" [disabled]="isSubmitting">
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status"
+                aria-hidden="true"></span>
+              <span *ngIf="isSubmitting" class="visually-hidden">Loading...</span>
+              Submit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Task Modal -->
+<div class="modal fade user-select-none" id="editTaskModal" data-bs-backdrop="static" data-bs-keyboard="false"
+  tabindex="-1" aria-labelledby="editTaskModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header bg-light p-3 m-0">
+        <h1 class="modal-title text-color fw-bold p-0 m-0" id="editTaskModalLabel" style="color: #002D74;">Edit Task
+        </h1>
+        <button type="button" class="btn-close me-2" data-bs-dismiss="modal" aria-label="Close"
+          (click)="resetForm()"></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="EditTaskForm" (ngSubmit)="submitUpdateForm()" #editTaskForm>
+          <div class="row">
+            <div class="col-12 mb-2">
+              <label class="form-label" for="editName">Name <span class="text-danger fw-bold fs-5">*</span></label>
+              <input class="form-control" type="text" id="editName" name="editName" formControlName="name" required
+                autocomplete="off">
+            </div>
+            <div class="col-12">
+              <label class="form-label" for="editDescription">Description</label>
+              <textarea class="form-control" id="editDescription" rows="3" name="editDescription"
+                formControlName="description" autocomplete="off"></textarea>
+            </div>
+            <div class="col-12 mb-2">
+              <label class="form-label" for="editStatus">Status</label>
+              <input class="form-control" type="text" id="editStatus" name="editStatus" formControlName="status"
+                required autocomplete="off">
+            </div>
+          </div>
+          <div class="d-flex justify-content-end mt-4">
+            <button class="btn btn-sm btn-primary custom-button" type="submit" [disabled]="isSubmitting">
+              <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2" role="status"
+                aria-hidden="true"></span>
+              <span *ngIf="isSubmitting" class="visually-hidden">Loading...</span>
+              Update
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

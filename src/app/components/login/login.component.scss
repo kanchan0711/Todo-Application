@@ -1,0 +1,41 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #e3e3e3;
+  background: #f4f4f4;
+}
+
+.card-body {
+  text-align: center;
+}
+
+.form-group {
+  margin-top: 0.5rem;
+  background: #f4f4f4;
+  text-align: start;
+}
+
+.text-center {
+  margin-bottom: 1rem;
+}
+
+.form-check {
+  text-align: left;
+}
+
+.button-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.button-content .text {
+  margin-right: 5px;
+}

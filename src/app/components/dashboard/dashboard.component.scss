@@ -1,0 +1,16 @@
+.custom-button {
+  background-color: #f9fafb;
+  color: #002d74;
+  border-color: #002d74;
+  transition: color 0.5s, background-color 0.5s, border-color 0.5s;
+}
+
+.custom-button:hover {
+  background-color: #002d74;
+  color: #ffffff;
+  border-color: #002d74;
+}
+
+* {
+  user-select: none !important;
+}
